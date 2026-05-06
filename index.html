@@ -1140,6 +1140,26 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
       <div class="na-card-hdr">Visitor Stats</div>
       <div id="na-visitor-stats"><div style="font-size:9px;color:var(--dm)">No data yet.</div></div>
     </div>
+    <div class="na-card na-full">
+      <div class="na-card-hdr">🔑 Password Management <span style="font-size:7px;color:var(--dm);font-weight:400">Changes take effect immediately for all future logins</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin-bottom:8px">Role Login Passwords</div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#f0b429;margin-bottom:3px">🏁 Race Control</div><input class="fi" id="na-rc-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#06b6d4;margin-bottom:3px">🚦 Track Marshal</div><input class="fi" id="na-ms-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#8b5cf6;margin-bottom:3px">🌐 Network Admin</div><input class="fi" id="na-netadmin-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#f97316;margin-bottom:3px">📊 Scorer / Official</div><input class="fi" id="na-scorer-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+        </div>
+        <div>
+          <div style="font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mu);margin-bottom:8px">RC Sub-Role Passwords</div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#ef4444;margin-bottom:3px">👔 Race Director</div><input class="fi" id="na-director-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#22c55e;margin-bottom:3px">🔧 Technical Inspector</div><input class="fi" id="na-inspector-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#06b6d4;margin-bottom:3px">⏱️ Timing &amp; Scoring</div><input class="fi" id="na-timing-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+          <div style="margin-bottom:6px"><div style="font-size:8px;font-weight:700;color:#a855f7;margin-bottom:3px">📡 Communications</div><input class="fi" id="na-comms-pw" type="text" style="width:100%;font-size:10px;padding:5px 8px"/></div>
+        </div>
+      </div>
+      <button onclick="naUpdatePasswords()" style="margin-top:10px;background:#8b5cf6;border:none;color:#fff;font-size:10px;font-weight:700;padding:7px 16px;border-radius:5px;cursor:pointer;font-family:Inter,sans-serif;width:100%">💾 Save All Passwords</button>
+    </div>
   </div>
 </div>
 <div id="tv-discord-screen" style="display:none;position:fixed;inset:0;background:#000;z-index:99997;flex-direction:column;align-items:center;justify-content:center;gap:0">
@@ -1971,6 +1991,8 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
             <div><div class="admin-row-lbl">Spectator TV Code</div><div class="admin-row-sub">Code required to access the spectator live view</div></div>
             <div style="display:flex;gap:4px"><input class="admin-input" id="adm-tv-code" type="text" placeholder="Leave blank = no code" style="width:110px;letter-spacing:.05em"/><button class="admin-save-btn" onclick="saveTvCode()">Set</button></div>
           </div>
+          <div class="admin-row">
+            <div><div class="admin-row-lbl">Racer Role</div><div class="admin-row-sub">Disable to lock out all racer logins</div></div>
             <select class="admin-input" id="adm-racer-enabled" style="width:80px">
               <option value="on">Enabled</option>
               <option value="off">Disabled</option>
@@ -2426,6 +2448,7 @@ try{
 firebase.initializeApp(FIREBASE_CONFIG);
 fbDb=firebase.database();
 fbRef=fbDb.ref('nascar_amr_v6');
+pwRef=fbDb.ref('nascar_amr_passwords');
 // Connection state
 firebase.database().ref('.info/connected').on('value',snap=>{
 fbConnected=snap.val()===true;
@@ -3829,9 +3852,17 @@ if(inp.value.trim()===ADMIN_PASSWORD){
 adminUnlocked=true;
 document.getElementById('admin-gate-panel').style.display='none';
 document.getElementById('admin-content-panel').style.display='';
-// Populate fields
+// Load passwords from Firebase first, then populate fields
+initPasswordsFirebase();
+setTimeout(()=>{
 document.getElementById('adm-rc-pw').value=getRcPw();
 document.getElementById('adm-ms-pw').value=getMsPw();
+document.getElementById('adm-na-pw').value=getNetAdminPw();
+document.getElementById('adm-director-pw').value=S.cfg.directorPw||'ADMIN2026';
+document.getElementById('adm-inspector-pw').value=S.cfg.inspectorPw||'ADMIN2026';
+document.getElementById('adm-timing-pw').value=S.cfg.timingPw||'ADMIN2026';
+document.getElementById('adm-comms-pw').value=S.cfg.commsPw||'ADMIN2026';
+document.getElementById('adm-scorer-pw').value=S.cfg.scorerPw||'ADMIN2026';
 document.getElementById('adm-proto-name').value=S.cfg.protocolName||'Race Control Protocol';
 document.getElementById('adm-esc').value=S.cfg.escThreshold||3;
 document.getElementById('adm-red').value=S.cfg.redThreshold||2;
@@ -3845,6 +3876,7 @@ const st=S.cfg.systemStatus||{};
 // Switch to status tab by default & render live race info
 switchAdminTab('status');
 renderAdminLiveRace();
+},400);
 } else {
 inp.classList.add('err');
 err.classList.add('show');
@@ -3899,9 +3931,11 @@ renderLoginStatus();renderLockoutStatus();
 function saveAdminPasswords(){
 const rcp=document.getElementById('adm-rc-pw').value.trim();
 const msp=document.getElementById('adm-ms-pw').value.trim();
+const nap=document.getElementById('adm-na-pw').value.trim();
 if(!rcp||!msp){toast('Passwords cannot be empty','err');return;}
 S.cfg.rcPassword=rcp;S.cfg.marshalPassword=msp;
-save();toast('Passwords updated','ok');
+if(nap)S.cfg.netAdminPassword=nap;
+save();savePasswordsToFirebase();toast('Passwords updated','ok');
 }
 function saveAdminAccess(){
 S.cfg.marshalRoleEnabled=document.getElementById('adm-marshal-enabled').value;
@@ -4597,6 +4631,76 @@ if(S.accessLog.length>200)S.accessLog=S.accessLog.slice(0,200);
 save();
 }
 function clearAccessLog(){S.accessLog=[];save();renderNetAdmin();toast('Access log cleared','ok');}
+// ══════════════════════════════════════════════
+// NET ADMIN — PASSWORD MANAGEMENT
+// ══════════════════════════════════════════════
+function naUpdatePasswords(){
+const get=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+const rcp=get('na-rc-pw');const msp=get('na-ms-pw');
+if(!rcp||!msp){toast('RC and Marshal passwords cannot be empty','err');return;}
+S.cfg.rcPassword=rcp;
+S.cfg.marshalPassword=msp;
+const nap=get('na-netadmin-pw');if(nap)S.cfg.netAdminPassword=nap;
+const scp=get('na-scorer-pw');if(scp)S.cfg.scorerPw=scp;
+const dp=get('na-director-pw');if(dp)S.cfg.directorPw=dp;
+const ip=get('na-inspector-pw');if(ip)S.cfg.inspectorPw=ip;
+const tp=get('na-timing-pw');if(tp)S.cfg.timingPw=tp;
+const cp=get('na-comms-pw');if(cp)S.cfg.commsPw=cp;
+save();
+savePasswordsToFirebase();
+toast('All passwords saved','ok');
+}
+
+function naPopulatePasswords(){
+const set=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val;};
+set('na-rc-pw',getRcPw());
+set('na-ms-pw',getMsPw());
+set('na-netadmin-pw',getNetAdminPw());
+set('na-scorer-pw',getScorerPw());
+set('na-director-pw',S.cfg.directorPw||'ADMIN2026');
+set('na-inspector-pw',S.cfg.inspectorPw||'ADMIN2026');
+set('na-timing-pw',S.cfg.timingPw||'ADMIN2026');
+set('na-comms-pw',S.cfg.commsPw||'ADMIN2026');
+}
+
+// ── Firebase password storage (separate node, not broadcast to all clients) ──
+let pwRef=null;
+function initPasswordsFirebase(){
+if(!fbDb)return;
+pwRef=fbDb.ref('nascar_amr_passwords');
+// Load passwords from Firebase (only RC and NetAdmin call this)
+pwRef.once('value',snap=>{
+const data=snap.val();
+if(!data)return;
+if(data.rcPassword)S.cfg.rcPassword=data.rcPassword;
+if(data.marshalPassword)S.cfg.marshalPassword=data.marshalPassword;
+if(data.netAdminPassword)S.cfg.netAdminPassword=data.netAdminPassword;
+if(data.scorerPw)S.cfg.scorerPw=data.scorerPw;
+if(data.directorPw)S.cfg.directorPw=data.directorPw;
+if(data.inspectorPw)S.cfg.inspectorPw=data.inspectorPw;
+if(data.timingPw)S.cfg.timingPw=data.timingPw;
+if(data.commsPw)S.cfg.commsPw=data.commsPw;
+// Update local storage too
+try{localStorage.setItem(SK,JSON.stringify(S));}catch(e){}
+naPopulatePasswords();
+});
+}
+
+function savePasswordsToFirebase(){
+if(!pwRef)return;
+const payload={
+rcPassword:S.cfg.rcPassword||DEFAULT_RC_PW,
+marshalPassword:S.cfg.marshalPassword||DEFAULT_MS_PW,
+netAdminPassword:S.cfg.netAdminPassword||'ADMIN2026',
+scorerPw:S.cfg.scorerPw||'ADMIN2026',
+directorPw:S.cfg.directorPw||'ADMIN2026',
+inspectorPw:S.cfg.inspectorPw||'ADMIN2026',
+timingPw:S.cfg.timingPw||'ADMIN2026',
+commsPw:S.cfg.commsPw||'ADMIN2026',
+};
+pwRef.set(payload).catch(e=>console.warn('Password save error:',e));
+}
+
 function renderNetAdmin(){
 if(currentRole!=='netadmin')return;
 const logEl=document.getElementById('na-access-log');
@@ -4625,6 +4729,7 @@ vs.innerHTML=Object.keys(counts).length?Object.entries(counts).map(([r,n])=>`<di
 // Sync status pill in NA
 const nd=document.getElementById('na-sync-dot'),nl=document.getElementById('na-sync-lbl');
 if(nd&&fbConnected){nd.style.background='#22c55e';if(nl)nl.textContent='Live';}
+naPopulatePasswords();
 }
 
 // ══════════════════════════════════════════════
@@ -4911,6 +5016,7 @@ document.getElementById('login-screen').style.display='none';
 document.getElementById('login-pw-screen').classList.remove('show');
 document.body.classList.add('app-ready','role-netadmin');
 lastRefreshTs=S.cfg.forceRefreshTs||0;
+initPasswordsFirebase();
 renderNetAdmin();setInterval(renderNetAdmin,3000);
 logAccess('netadmin','login','Network Admin session started');
 }
@@ -5153,7 +5259,7 @@ S.cfg.inspectorPw=get('adm-inspector-pw')||'ADMIN2026';
 S.cfg.timingPw=get('adm-timing-pw')||'ADMIN2026';
 S.cfg.commsPw=get('adm-comms-pw')||'ADMIN2026';
 S.cfg.scorerPw=get('adm-scorer-pw')||'ADMIN2026';
-save();toast('Sub-role passwords saved','ok');
+save();savePasswordsToFirebase();toast('Sub-role passwords saved','ok');
 }
 
 // ══════════════════════════════════════════════
@@ -5388,8 +5494,6 @@ function renderLoginStatus(){
   const items=SYSTEMS.map(s=>{const v=STATUS_META[st[s.key]||'ok'];return`<div class="lst-item"><div class="lst-dot ${v.dot}"></div><span class="lst-name">${s.icon} ${s.name}</span></div>`;}).join('');
   strip.innerHTML=`<span class="lst-label">NASCAR PORTAL</span>${items}`;
 }
-
-document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.key==='Enter')submitLog();});
 
 // Init
 initDevice();
