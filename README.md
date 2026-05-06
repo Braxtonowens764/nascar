@@ -1,2 +1,0 @@
-# nascar
-NASCAR 
