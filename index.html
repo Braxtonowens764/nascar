@@ -4248,39 +4248,6 @@ if(marshalAuthority.active&&marshalAuthority.medicalLogs&&medical.includes(type)
 return false;
 }
 
-function renderRacerDash(){
-const d=S.drivers.find(x=>x.id===currentDriverId);
-const cfg=FLAG_CFG[S.race.flag]||FLAG_CFG.Green;
-// Flag display
-const rb=document.getElementById(‘rflag-big’);
-if(rb){rb.style.borderColor=cfg.color;rb.style.background=cfg.color+‘12’;if(cfg.animClass)rb.className=‘racer-flag-big ‘+cfg.animClass;else rb.className=‘racer-flag-big’;}
-const ri=document.getElementById(‘rflag-icon’);if(ri)ri.textContent=cfg.icon;
-const rl=document.getElementById(‘rflag-lbl’);if(rl){rl.textContent=S.race.flag.toUpperCase()+’ FLAG’;rl.style.color=cfg.color;}
-const rs=document.getElementById(‘rflag-sub’);if(rs)rs.textContent=cfg.sub;
-// Driver stats
-if(d){
-const el=document.getElementById(‘rd-num’);if(el)el.textContent=’#’+d.carNum;
-const ei=document.getElementById(‘rd-inc’);if(ei)ei.textContent=d.incidents||0;
-const ep=document.getElementById(‘rd-pens’);if(ep)ep.textContent=(d.penalties||[]).filter(p=>!p.served).length;
-const sr=document.getElementById(‘rd-status-row’);
-if(sr)sr.innerHTML=`<span class="dcs ${STATUS_CLS[d.status]||'s-act'}" style="font-size:9px">${d.status}</span>`;
-// Penalties
-const pp=document.getElementById(‘rd-penalties’);
-if(pp){
-const pens=d.penalties||[];
-if(!pens.length){pp.innerHTML=’<div style="font-size:9px;color:var(--dm)">No penalties on record.</div>’;}
-else{pp.innerHTML=pens.map(p=>`<div class="racer-pen-row"><span class="racer-pen-type ${p.served?'served':''}">${E(p.type)}</span><span style="font-size:8px;color:var(--mu);flex:1">${E(p.notes||'')}</span>${p.served?'<span class="racer-pen-tag" style="background:rgba(34,197,94,.1);color:#22c55e;border:1px solid rgba(34,197,94,.2)">✓ Served</span>':'<span class="racer-pen-tag" style="background:rgba(226,75,74,.1);color:#e24b4a;border:1px solid rgba(226,75,74,.2)">Pending</span>'}<span style="font-size:7px;color:var(--dm)">${E(p.time)}</span></div>`).join(’’);}
-}
-}
-// Active incidents
-const inc=document.getElementById(‘rd-incidents’);
-if(inc){
-const active=S.groups.filter(g=>!g.isFlagLog&&g.status!==‘Resolved’&&g.status!==‘Closed’);
-if(!active.length){inc.innerHTML=’<div style="font-size:9px;color:var(--dm)">No active incidents.</div>’;}
-else{inc.innerHTML=active.map(g=>{const c=TYPE_CLR[g.type]||’#888’;return`<div class="racer-inc-row" style="border-left-color:${c}"><div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:9px;font-weight:700;color:${c}">${E(g.type)}</span><span class="lcs ${LCS_CLS[g.status]||'lcs-det'}" style="font-size:7px">${g.status}</span></div><div style="font-size:8px;color:var(--mu)">${E(g.location||'Unknown')} · Lap ${g.lap||'?'}</div></div>`;}).join(’’);}
-}
-}
-
 // Marshal: suggest a protocol to Race Control
 function openSuggestProtocol(){
 const protos=getAllProtocols().filter(p=>p.enabled!==false);
