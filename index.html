@@ -803,8 +803,8 @@ body.role-spectator #topbar,body.role-spectator .topbar,body.role-spectator .app
 .login-title{font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-.5px}
 .login-sub{font-size:11px;color:var(--mu);margin-bottom:28px}
 .login-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:700px}
-.role-card{background:var(--p1);border:1.5px solid var(--bd2);border-radius:12px;padding:20px 16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;width:100%;text-align:left;-webkit-tap-highlight-color:transparent}
-.role-card:hover,.role-card:active{background:var(--p2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.role-card{background:var(--p1);border:1.5px solid var(--bd2);border-radius:12px;padding:20px 16px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.role-card:hover{background:var(--p2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.6)}
 .role-card-icon{font-size:28px;line-height:1}
 .role-card-name{font-size:14px;font-weight:800}
 .role-card-desc{font-size:9px;color:var(--mu);line-height:1.5;flex:1}
@@ -1131,24 +1131,24 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
   <div id="login-race-info" style="width:100%;max-width:700px;margin-bottom:0"></div>
   <div class="login-roles" id="login-roles">
     <!-- Primary operational roles — 3 across -->
-    <button class="role-card marshal-card" onclick="startLogin('marshal')">
+    <div class="role-card marshal-card" onclick="startLogin('marshal')">
       <div class="role-card-icon">🚦</div>
       <div class="role-card-name">Track Marshal</div>
       <div class="role-card-desc">Flag control, track condition logs, inspections, and protocol suggestions to Race Control.</div>
       <div class="role-badge marshal">MARSHAL</div>
-    </button>
-    <button class="role-card racer-card" onclick="selectRole('racer')">
+    </div>
+    <div class="role-card racer-card" onclick="selectRole('racer')">
       <div class="role-card-icon">🏎️</div>
       <div class="role-card-name">Racer</div>
       <div class="role-card-desc">View the active flag, live incidents, and your personal penalties and standings.</div>
       <div class="role-badge racer">DRIVER</div>
-    </button>
-    <button class="role-card" style="border-color:rgba(99,102,241,.15)" onclick="selectRole('spectator')">
+    </div>
+    <div class="role-card" style="border-color:rgba(99,102,241,.15)" onclick="selectRole('spectator')">
       <div class="role-card-icon">👁️</div>
       <div class="role-card-name">Spectator</div>
       <div class="role-card-desc">Watch the race live. Flag, standings, and incidents (non-critical, 1-min delay).</div>
       <div class="role-badge" style="background:rgba(99,102,241,.1);color:#6366f1;border:1px solid rgba(99,102,241,.25)">VIEW ONLY</div>
-    </button>
+    </div>
     <!-- Admin divider -->
     <div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:4px 0">
       <div style="flex:1;height:1px;background:var(--bd)"></div>
@@ -1156,7 +1156,7 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
       <div style="flex:1;height:1px;background:var(--bd)"></div>
     </div>
     <!-- Admin roles — smaller, side by side -->
-    <button class="role-card admin-card" style="padding:12px 14px;text-align:left" onclick="startLogin('rc')">
+    <div class="role-card admin-card" style="padding:12px 14px" onclick="startLogin('rc')">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:20px">🏁</span>
         <div>
@@ -1165,8 +1165,8 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
         </div>
         <div class="role-badge admin" style="margin-left:auto;flex-shrink:0">ADMIN</div>
       </div>
-    </button>
-    <button class="role-card" style="border-color:rgba(249,115,22,.15);padding:12px 14px;text-align:left" onclick="startLogin('scorer')">
+    </div>
+    <div class="role-card" style="border-color:rgba(249,115,22,.15);padding:12px 14px" onclick="startLogin('scorer')">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:20px">📊</span>
         <div>
@@ -1175,8 +1175,8 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
         </div>
         <div class="role-badge" style="margin-left:auto;flex-shrink:0;background:rgba(249,115,22,.1);color:#f97316;border:1px solid rgba(249,115,22,.2)">OFFICIAL</div>
       </div>
-    </button>
-    <button class="role-card" style="border-color:rgba(139,92,246,.12);padding:12px 14px;opacity:.75;text-align:left" onclick="startLogin('netadmin')">
+    </div>
+    <div class="role-card" style="border-color:rgba(139,92,246,.12);padding:12px 14px;opacity:.75" onclick="startLogin('netadmin')">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:20px">🌐</span>
         <div>
@@ -1185,7 +1185,7 @@ body.role-racer .topbar,body.role-racer .app-body{display:none}
         </div>
         <div class="role-badge" style="margin-left:auto;flex-shrink:0;background:rgba(139,92,246,.1);color:#8b5cf6;border:1px solid rgba(139,92,246,.2)">NET ADMIN</div>
       </div>
-    </button>
+    </div>
   </div>
   <!-- Password screen — shown after RC or Marshal card click -->
   <div class="login-pw-screen" id="login-pw-screen">
@@ -4050,6 +4050,8 @@ const el=document.getElementById(id);if(el)el.style.display=‘none’;
 });
 const ss=document.getElementById(‘subrole-screen’);if(ss)ss.classList.remove(‘show’);
 const sp=document.getElementById(‘subrole-pw-screen’);if(sp)sp.classList.remove(‘show’);
+const ho=document.getElementById(‘hub-overlay’);if(ho)ho.classList.remove(‘on’);
+const ps=document.getElementById(‘pub-screen’);if(ps)ps.classList.remove(‘on’);
 document.getElementById(‘login-screen’).style.display=’’;
 document.getElementById(‘login-roles’).style.display=’’;
 document.getElementById(‘login-pw-screen’).classList.remove(‘show’);
@@ -4637,12 +4639,17 @@ toast(‘Announcement sent to all racers’,‘ok’);
 }
 
 function checkAnnouncements(){
-if(currentRole!==‘racer’)return;
+const visible=[‘racer’,‘marshal’,‘spectator’,‘scorer’];
+if(!visible.includes(currentRole))return;
 const anns=S.announcements||[];
 if(!anns.length)return;
-// Check for unread broadcast announcements OR direct messages to this driver
-const unread=anns.filter(a=>a.ts>lastAckTs&&(!a.direct||a.targetDriverId===currentDriverId));
-if(unread.length>0){showAnnouncementOverlay(unread[unread.length-1]);}
+const unread=anns.filter(a=>{
+if(a.ts<=lastAckTs)return false;
+if(a.direct)return a.targetDriverId===currentDriverId;
+if(a.naTarget&&a.naTarget!==‘all’)return a.naTarget===currentRole;
+return true;
+});
+if(unread.length>0)showAnnouncementOverlay(unread[unread.length-1]);
 }
 
 function showAnnouncementOverlay(ann){
@@ -5181,6 +5188,7 @@ document.getElementById(‘login-pw-screen’).classList.remove(‘show’);
 document.body.classList.add(‘app-ready’,‘role-netadmin’);
 lastRefreshTs=S.cfg.forceRefreshTs||0;
 renderNetAdmin();setInterval(renderNetAdmin,3000);
+renderNetAdminSettings();
 logAccess(‘netadmin’,‘login’,‘Network Admin session started’);
 }
 
@@ -5910,36 +5918,6 @@ S.announcements.push({id:uid(),text:msg.value.trim(),ts:Date.now(),lap:S.race?S.
 msg.value=’’;save();closeModal(‘m-na-broadcast’);
 logAccess(‘netadmin’,‘broadcast’,’→ ’+(target?target.value:‘all’));
 toast(‘Broadcast sent’,‘ok’);
-}
-
-// ── Update logout to close hub overlay ──
-// Patch into existing logout — close hub when logging out
-const _origLogout_hub=logout;
-function logout(){
-_origLogout_hub();
-const ho=document.getElementById(‘hub-overlay’);if(ho)ho.classList.remove(‘on’);
-const ps=document.getElementById(‘pub-screen’);if(ps)ps.classList.remove(‘on’);
-}
-
-// ── Update checkAnnouncements to work for all roles ──
-function checkAnnouncements(){
-const visible=[‘racer’,‘marshal’,‘spectator’,‘scorer’];
-if(!visible.includes(currentRole))return;
-const anns=S.announcements||[];if(!anns.length)return;
-const unread=anns.filter(a=>{
-if(a.ts<=lastAckTs)return false;
-if(a.direct)return a.targetDriverId===currentDriverId;
-if(a.naTarget&&a.naTarget!==‘all’)return a.naTarget===currentRole;
-return true;
-});
-if(unread.length>0)showAnnouncementOverlay(unread[unread.length-1]);
-}
-
-// ── Extend openNetAdminDash to populate settings ──
-const _origOpenNetAdminDash=openNetAdminDash;
-function openNetAdminDash(){
-_origOpenNetAdminDash();
-renderNetAdminSettings();
 }
 
 // ── migrateState additions ──
